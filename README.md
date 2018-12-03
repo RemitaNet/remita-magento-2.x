@@ -20,6 +20,12 @@ In command line, navigate to the installation directory of magento2
 Enter the following commands:
 
 ```
+composer require systemspecs/remita-magento2-payment-gateway
+```
+
+* Wait while dependencies are updated.
+
+```
 php bin/magento module:enable SystemSpecs_Remita --clear-static-content
 php bin/magento setup:upgrade
 php bin/magento setup:di:compile
