@@ -1,0 +1,137 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!-- Payment Method Facade configuration -->
+    <virtualType name="RemitaFacade" type="Magento\Payment\Model\Method\Adapter">
+        <arguments>
+            <argument name="code" xsi:type="const">\SystemSpecs\Remita\Model\Ui\ConfigProvider::CODE</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">SystemSpecs\Remita\Block\Info</argument>
+            <argument name="valueHandlerPool" xsi:type="object">RemitaValueHandlerPool</argument>
+            <argument name="commandPool" xsi:type="object">RemitaCommandPool</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Configuration reader -->
+    <virtualType name="RemitaConfig" type="Magento\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">\SystemSpecs\Remita\Model\Ui\ConfigProvider::CODE</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Logger, initialized with RemitaConfig -->
+    <virtualType name="RemitaLogger" type="Magento\Payment\Model\Method\Logger">
+        <arguments>
+            <argument name="config" xsi:type="object">RemitaConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="SystemSpecs\Remita\Gateway\Http\Client\ClientMock">
+        <arguments>
+            <argument name="logger" xsi:type="object">RemitaLogger</argument>
+        </arguments>
+    </type>
+
+    <!-- Commands infrastructure -->
+    <virtualType name="RemitaCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="authorize" xsi:type="string">RemitaAuthorizeCommand</item>
+                <item name="capture" xsi:type="string">RemitaCaptureCommand</item>
+                <item name="void" xsi:type="string">RemitaVoidCommand</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Authorize command -->
+    <virtualType name="RemitaAuthorizeCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">RemitaAuthorizationRequest</argument>
+            <argument name="handler" xsi:type="object">RemitaResponseHandlerComposite</argument>
+            <argument name="transferFactory" xsi:type="object">SystemSpecs\Remita\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">SystemSpecs\Remita\Gateway\Http\Client\ClientMock</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Authorization Request -->
+    <virtualType name="RemitaAuthorizationRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="transaction" xsi:type="string">SystemSpecs\Remita\Gateway\Request\AuthorizationRequest</item>
+                <item name="mockData" xsi:type="string">SystemSpecs\Remita\Gateway\Request\MockDataRequest</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <type name="SystemSpecs\Remita\Gateway\Request\AuthorizationRequest">
+        <arguments>
+            <argument name="config" xsi:type="object">RemitaConfig</argument>
+        </arguments>
+    </type>
+
+    <!-- Capture command -->
+    <virtualType name="RemitaCaptureCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">SystemSpecs\Remita\Gateway\Request\CaptureRequest</argument>
+            <argument name="handler" xsi:type="object">SystemSpecs\Remita\Gateway\Response\TxnIdHandler</argument>
+            <argument name="transferFactory" xsi:type="object">SystemSpecs\Remita\Gateway\Http\TransferFactory</argument>
+            <argument name="validator" xsi:type="object">SystemSpecs\Remita\Gateway\Validator\ResponseCodeValidator</argument>
+            <argument name="client" xsi:type="object">SystemSpecs\Remita\Gateway\Http\Client\ClientMock</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Capture Request -->
+    <type name="SystemSpecs\Remita\Gateway\Request\CaptureRequest">
+        <arguments>
+            <argument name="config" xsi:type="object">RemitaConfig</argument>
+        </arguments>
+    </type>
+
+    <!-- Void command -->
+    <virtualType name="RemitaVoidCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">SystemSpecs\Remita\Gateway\Request\VoidRequest</argument>
+            <argument name="handler" xsi:type="object">SystemSpecs\Remita\Gateway\Response\TxnIdHandler</argument>
+            <argument name="transferFactory" xsi:type="object">SystemSpecs\Remita\Gateway\Http\TransferFactory</argument>
+            <argument name="validator" xsi:type="object">SystemSpecs\Remita\Gateway\Validator\ResponseCodeValidator</argument>
+            <argument name="client" xsi:type="object">SystemSpecs\Remita\Gateway\Http\Client\ClientMock</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Void Request -->
+    <type name="SystemSpecs\Remita\Gateway\Request\VoidRequest">
+        <arguments>
+            <argument name="config" xsi:type="object">RemitaConfig</argument>
+        </arguments>
+    </type>
+
+    <!-- Response handlers -->
+    <virtualType name="RemitaResponseHandlerComposite" type="Magento\Payment\Gateway\Response\HandlerChain">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="txnid" xsi:type="string">SystemSpecs\Remita\Gateway\Response\TxnIdHandler</item>
+                <item name="fraud" xsi:type="string">SystemSpecs\Remita\Gateway\Response\FraudHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Value handlers infrastructure -->
+    <virtualType name="RemitaValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">RemitaConfigValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="RemitaConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">RemitaConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="SystemSpecs\Remita\Block\Info">
+        <arguments>
+            <argument name="config" xsi:type="object">RemitaConfig</argument>
+        </arguments>
+    </type>
+
+</config>
