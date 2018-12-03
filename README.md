@@ -8,7 +8,9 @@
 ---
 ### Summary
 
-With Remita Magento2 Payment Gateway, the store admin can easily add all desired payment methods to the Magento 2 webshop. Please refer to https://www.remita.net for an overview of all features and services. 
+With Remita Magento2 Payment Gateway, the store admin can easily add all desired payment methods to the Magento webshop. Please refer to https://www.remita.net for an overview of all features and services.
+
+![](payment-image.png) 
 
 ---
 ### Quickstart
