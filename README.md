@@ -13,7 +13,7 @@ With Remita Magento2 Payment Gateway, the store admin can easily add all desired
 ---
 ### Quickstart
 
-##### Installing
+##### Install
 
 In command line, navigate to the installation directory of magento2
 
