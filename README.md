@@ -12,6 +12,8 @@ With Remita Magento2 Payment Plugin, the store admin can easily add all desired 
 
 ![](payment-image.png) 
 
+![](remita-admin-panel.png)
+
 ---
 ### Quickstart
 
