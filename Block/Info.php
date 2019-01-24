@@ -18,7 +18,7 @@ class Info extends ConfigurableInfo
     }
 
     /**
-     * Returns value view
+     * Returns value view ////
      *
      * @param string $field
      * @param string $value
