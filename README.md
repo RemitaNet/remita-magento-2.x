@@ -8,7 +8,7 @@
 ---
 ### Summary
 
-With Remita Magento2 Payment Plugin, the store admin can easily add all desired payment methods to the Magento webshop. Please refer to https://www.remita.net for an overview of all features and services.
+The Remita Magento2 Payment Plugin allows store admins to integrate various payment methods into their Magento webshop easily. For a comprehensive overview of features and services, please visit [Remita's official website](https://www.remita.net).
 
 ![](payment-image.png) 
 
