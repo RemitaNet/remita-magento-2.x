@@ -28,7 +28,7 @@ composer require systemspecs/remita-magento2-payment-gateway
 ```
 * This will update the dependencies.
 
-Enable the module and update configurations:
+3. Enable the module and update configurations:
 
 ```bash
 php bin/magento module:enable SystemSpecs_Remita --clear-static-content
@@ -64,3 +64,5 @@ Fork the repository.
 2. Make your changes and commit: `git commit -m "added some new features"`
 3. Push your changes: `git push origin feature-name`
 4. Submit a Pull Request (PR).
+
+Thank you!
